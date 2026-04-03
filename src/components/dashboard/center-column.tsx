@@ -6,25 +6,25 @@ import { ClipboardPen, History } from "lucide-react"
 
 export function CenterColumn() {
   return (
-    <div className="max-w-[640px] mx-auto space-y-6">
+    <div className="space-y-4">
       {/* Shift Report */}
-      <section>
-        <div className="flex items-center gap-2 mb-4">
-          <ClipboardPen className="h-4 w-4 text-primary" />
-          <h2 className="text-sm font-semibold text-foreground/90">End of Shift Report</h2>
+      <section className="rounded-lg border border-border/60 bg-card">
+        <div className="flex items-center gap-2 bg-muted rounded-t-lg px-4 py-2.5">
+          <ClipboardPen className="h-5 w-5 text-primary" />
+          <h2 className="text-xl font-semibold text-foreground/90">End of Shift Report</h2>
         </div>
-        <div className="rounded-lg border border-border/60 bg-card p-5">
+        <div className="p-4">
           <ShiftReportForm />
         </div>
       </section>
 
       {/* Report History */}
-      <section>
-        <div className="flex items-center gap-2 mb-4">
-          <History className="h-4 w-4 text-primary" />
-          <h2 className="text-sm font-semibold text-foreground/90">Report History</h2>
+      <section className="rounded-lg border border-border/60 bg-card">
+        <div className="flex items-center gap-2 bg-muted rounded-t-lg px-4 py-2.5">
+          <History className="h-5 w-5 text-primary" />
+          <h2 className="text-xl font-semibold text-foreground/90">Report History</h2>
         </div>
-        <div className="rounded-lg border border-border/60 bg-card p-5">
+        <div className="p-4">
           <ReportHistory />
         </div>
       </section>

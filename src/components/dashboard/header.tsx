@@ -7,12 +7,12 @@ export function Header() {
     <header className="h-12 shrink-0 border-b border-border/60 bg-card px-5 flex items-center justify-between">
       <div className="flex items-center gap-2.5">
         <div className="h-6 w-6 rounded-md bg-primary flex items-center justify-center">
-          <span className="text-xs font-bold text-primary-foreground">IP</span>
+          <span className="text-sm font-bold text-primary-foreground">IP</span>
         </div>
-        <span className="text-sm font-semibold tracking-tight text-foreground/90">
+        <span className="text-base font-semibold tracking-tight text-foreground/90">
           Internal Portal
         </span>
-        <span className="text-xs text-muted-foreground font-mono hidden sm:inline ml-1">
+        <span className="text-sm text-muted-foreground font-mono hidden sm:inline ml-1">
           v0.1
         </span>
       </div>
@@ -23,7 +23,7 @@ export function Header() {
             <CircleUser className="h-3.5 w-3.5 text-foreground/80" />
           </div>
           <div className="hidden sm:block">
-            <p className="text-xs font-medium leading-none text-foreground/80">Employee</p>
+            <p className="text-sm font-medium leading-none text-foreground/80">Employee</p>
           </div>
         </div>
       </div>
