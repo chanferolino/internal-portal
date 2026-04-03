@@ -2,15 +2,14 @@
 
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Clock } from "@/components/dashboard/clock"
-import { TimezoneSelector } from "@/components/dashboard/timezone-selector"
+import { ClockTime, ClockDate } from "@/components/dashboard/clock"
 import { TimeTrackingButton } from "@/components/dashboard/time-tracking-button"
 import { LeaveRequestModal } from "@/components/modals/leave-request-modal"
 import { OutageReportModal } from "@/components/modals/outage-report-modal"
-import { Zap, CalendarDays } from "lucide-react"
+import { Zap, CalendarDays, Timer } from "lucide-react"
 
 export function LeftSidebar() {
-  const [timezone, setTimezone] = useState("Asia/Manila")
+  const [timezone] = useState(() => Intl.DateTimeFormat().resolvedOptions().timeZone)
   const [isClockedIn, setIsClockedIn] = useState(false)
   const [leaveModalOpen, setLeaveModalOpen] = useState(false)
   const [outageModalOpen, setOutageModalOpen] = useState(false)
@@ -21,24 +20,25 @@ export function LeftSidebar() {
   }
 
   return (
-    <div className="space-y-4">
-      {/* Clock section */}
-      <div className="rounded-lg border border-border/60 bg-background p-4">
-        <Clock timezone={timezone} />
+    <div className="rounded-lg border border-border/60 bg-card">
+      <div className="flex items-center gap-2 bg-muted rounded-t-lg px-3 py-2">
+        <Timer className="h-4 w-4 text-primary" />
+        <h2 className="text-base font-semibold text-foreground/90">Time Tracking</h2>
       </div>
 
-      <TimezoneSelector value={timezone} onChange={(val) => val && setTimezone(val)} />
-      <TimeTrackingButton isClockedIn={isClockedIn} onToggle={handleToggleClock} />
+      <div className="p-3 space-y-2.5">
+        <div className="rounded-md border border-border/60 bg-background p-2.5">
+          <ClockDate timezone={timezone} />
+        </div>
 
-      {/* Action buttons */}
-      <div className="pt-2">
-        <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-[0.15em] mb-2.5 px-0.5">
-          Quick Actions
-        </p>
+        <ClockTime timezone={timezone} />
+
+        <TimeTrackingButton isClockedIn={isClockedIn} onToggle={handleToggleClock} />
+
         <div className="grid grid-cols-2 gap-2">
           <Button
             variant="outline"
-            className="h-auto py-3 flex-col gap-1 border-border/60 bg-background hover:bg-accent hover:border-border text-xs font-medium"
+            className="h-auto py-2 gap-1.5 border-border/60 bg-background hover:bg-accent text-sm font-medium"
             onClick={() => setOutageModalOpen(true)}
           >
             <Zap className="h-4 w-4 text-amber-400" />
@@ -46,7 +46,7 @@ export function LeftSidebar() {
           </Button>
           <Button
             variant="outline"
-            className="h-auto py-3 flex-col gap-1 border-border/60 bg-background hover:bg-accent hover:border-border text-xs font-medium"
+            className="h-auto py-2 gap-1.5 border-border/60 bg-background hover:bg-accent text-sm font-medium"
             onClick={() => setLeaveModalOpen(true)}
           >
             <CalendarDays className="h-4 w-4 text-chart-2" />

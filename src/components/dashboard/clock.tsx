@@ -6,10 +6,10 @@ type ClockProps = {
   timezone: string
 }
 
-export function Clock({ timezone }: ClockProps) {
-  const [time, setTime] = useState<string>("")
-  const [period, setPeriod] = useState<string>("")
-  const [date, setDate] = useState<string>("")
+export function useClock(timezone: string) {
+  const [time, setTime] = useState("")
+  const [period, setPeriod] = useState("")
+  const [date, setDate] = useState("")
 
   useEffect(() => {
     function updateClock() {
@@ -40,17 +40,48 @@ export function Clock({ timezone }: ClockProps) {
     return () => clearInterval(interval)
   }, [timezone])
 
+  return { time, period, date }
+}
+
+export function Clock({ timezone }: ClockProps) {
+  const { time, period, date } = useClock(timezone)
+
   return (
-    <div className="text-center space-y-2">
-      <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-[0.2em]">
+    <div className="text-center space-y-1">
+      <p className="text-sm font-medium text-muted-foreground uppercase tracking-[0.2em]">
         {date}
       </p>
       <div className="flex items-baseline justify-center gap-1">
-        <p className="text-4xl font-bold tabular-nums tracking-tight font-mono text-foreground">
+        <p className="text-5xl font-medium tabular-nums tracking-tight text-foreground">
           {time}
         </p>
         <span className="text-sm font-medium text-primary">{period}</span>
       </div>
     </div>
+  )
+}
+
+export function ClockTime({ timezone }: ClockProps) {
+  const { time, period } = useClock(timezone)
+
+  return (
+    <div className="text-center py-4">
+      <div className="flex items-baseline justify-center gap-1.5">
+        <p className="text-6xl font-medium tabular-nums tracking-tight text-foreground">
+          {time}
+        </p>
+        <span className="text-base font-medium text-primary">{period}</span>
+      </div>
+    </div>
+  )
+}
+
+export function ClockDate({ timezone }: ClockProps) {
+  const { date } = useClock(timezone)
+
+  return (
+    <p className="text-sm font-medium text-muted-foreground uppercase tracking-[0.15em] text-center">
+      {date}
+    </p>
   )
 }

@@ -27,17 +27,14 @@ export function UsHolidays() {
 
   return (
     <div>
-      <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-[0.15em] mb-3 px-0.5">
-        US Holidays 2025
-      </p>
       <div className="space-y-0.5">
         {visible.map((h) => (
           <div
             key={h.name}
-            className="flex justify-between items-center py-1.5 px-2 rounded-md text-xs hover:bg-accent/40 transition-colors"
+            className="flex justify-between items-center py-1.5 px-2 rounded-md text-sm hover:bg-accent/40 transition-colors"
           >
             <span className="text-foreground/80">{h.name}</span>
-            <span className="text-muted-foreground font-mono text-[11px]">
+            <span className="text-muted-foreground text-sm">
               {h.date}
             </span>
           </div>
@@ -46,7 +43,7 @@ export function UsHolidays() {
       {HOLIDAYS_2025.length > COLLAPSED_COUNT && (
         <button
           onClick={() => setExpanded((p) => !p)}
-          className="flex items-center gap-1 mt-2 px-2 text-[11px] text-muted-foreground hover:text-foreground/80 transition-colors cursor-pointer"
+          className="flex items-center gap-1 mt-2 px-2 text-sm text-muted-foreground hover:text-foreground/80 transition-colors cursor-pointer"
         >
           {expanded ? (
             <>

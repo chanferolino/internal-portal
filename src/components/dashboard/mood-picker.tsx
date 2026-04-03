@@ -41,7 +41,7 @@ export function MoodPicker({ value, onChange }: MoodPickerProps) {
               </span>
               <span
                 className={cn(
-                  "text-[10px] font-medium",
+                  "text-sm font-medium",
                   isActive ? "text-primary" : "text-muted-foreground"
                 )}
               >
