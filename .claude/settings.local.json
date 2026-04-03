@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep -E \"\\\\.\\(md|json\\)$\")",
+      "WebSearch",
+      "WebFetch(domain:gist.github.com)"
+    ]
+  }
+}

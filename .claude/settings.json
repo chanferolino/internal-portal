@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:ui.shadcn.com)",
+      "WebFetch(domain:www.builder.io)",
+      "Bash(pnpm dlx:*)",
+      "WebFetch(domain:dev.to)",
+      "WebFetch(domain:www.turbodocx.com)",
+      "Bash(claude mcp:*)",
+      "Bash(npx claude-plugins:*)",
+      "Bash(gh auth:*)",
+      "Bash(gh repo:*)"
+    ]
+  }
+}
