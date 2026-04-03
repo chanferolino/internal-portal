@@ -10,7 +10,12 @@
       "Bash(claude mcp:*)",
       "Bash(npx claude-plugins:*)",
       "Bash(gh auth:*)",
-      "Bash(gh repo:*)"
+      "Bash(gh repo:*)",
+      "Bash(pnpm create:*)",
+      "Read(//c/Users/Gaming PC/Desktop/Dev/Codev/**)",
+      "Bash(pnpm install:*)",
+      "Bash(pnpm add:*)",
+      "Bash(pnpm approve-builds:*)"
     ]
   }
 }
