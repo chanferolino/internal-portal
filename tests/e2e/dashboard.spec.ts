@@ -1,5 +1,8 @@
 import { test, expect } from "@playwright/test"
 
+// Use a wide viewport so the 3-column layout is fully visible
+test.use({ viewport: { width: 1440, height: 900 } })
+
 test.describe("Dashboard Layout", () => {
   test("should display the three-column layout", async ({ page }) => {
     await page.goto("/")
@@ -8,23 +11,23 @@ test.describe("Dashboard Layout", () => {
     await expect(page.locator("text=Internal Portal")).toBeVisible()
 
     // Left sidebar - Time Tracking
-    await expect(page.locator("text=Time Tracking")).toBeVisible()
+    await expect(page.locator("text=Time Tracking").first()).toBeVisible()
 
     // Center - End of Shift Report
     await expect(page.locator("text=End of Shift Report")).toBeVisible()
 
     // Right sidebar sections
-    await expect(page.locator("text=US Holidays 2025")).toBeVisible()
-    await expect(page.locator("text=About Us")).toBeVisible()
-    await expect(page.locator("text=Resources")).toBeVisible()
+    await expect(page.locator("text=US Holidays 2025").first()).toBeVisible()
+    await expect(page.locator("text=About Us").first()).toBeVisible()
+    await expect(page.locator("text=Resources").first()).toBeVisible()
   })
 
   test("should display the live clock", async ({ page }) => {
     await page.goto("/")
 
     // Clock should show time with AM/PM
-    await expect(page.locator("text=/\\d{2}:\\d{2}:\\d{2}/")).toBeVisible()
-    await expect(page.locator("text=/AM|PM/")).toBeVisible()
+    await expect(page.locator("text=/\\d{2}:\\d{2}:\\d{2}/").first()).toBeVisible()
+    await expect(page.locator("text=/AM|PM/").first()).toBeVisible()
   })
 })
 
@@ -32,7 +35,7 @@ test.describe("Time Tracking", () => {
   test("should toggle between Time In and Time Out", async ({ page }) => {
     await page.goto("/")
 
-    const timeButton = page.locator("button", { hasText: /Time In|Time Out/ })
+    const timeButton = page.locator("button:visible", { hasText: /Time In|Time Out/ }).first()
     await expect(timeButton).toBeVisible()
 
     const initialText = await timeButton.textContent()
@@ -67,21 +70,20 @@ test.describe("Modals", () => {
   test("should open leave request modal", async ({ page }) => {
     await page.goto("/")
 
-    await page.click("text=Leave Request")
-    await expect(page.locator("text=Leave Request").nth(1)).toBeVisible()
+    await page.locator("button:visible", { hasText: "Leave Request" }).first().click()
+    await expect(page.locator("[role=dialog]")).toBeVisible()
   })
 
   test("should open outage report modal", async ({ page }) => {
     await page.goto("/")
 
-    await page.click("text=Report Outage")
-    await expect(page.locator("text=Report Outage").nth(1)).toBeVisible()
+    await page.locator("button:visible", { hasText: "Report Outage" }).first().click()
+    await expect(page.locator("[role=dialog]")).toBeVisible()
   })
 
   test("should open ticket modal via FAB", async ({ page }) => {
     await page.goto("/")
 
-    // Click the floating action button (last button with MessageSquarePlus icon)
     const fab = page.locator("button.fixed")
     await fab.click()
     await expect(page.locator("text=File a Ticket")).toBeVisible()
@@ -92,22 +94,24 @@ test.describe("Right Sidebar", () => {
   test("should expand holidays list", async ({ page }) => {
     await page.goto("/")
 
-    // Christmas should not be visible initially
-    await expect(page.locator("text=Christmas Day")).not.toBeVisible()
+    const sidebar = page.locator("aside").last()
 
-    await page.click("text=/Show all/")
-    await expect(page.locator("text=Christmas Day")).toBeVisible()
+    await expect(sidebar.locator("text=Christmas Day")).not.toBeVisible()
+    await sidebar.locator("text=/Show all/").click()
+    await expect(sidebar.locator("text=Christmas Day")).toBeVisible()
   })
 
   test("should switch About Us tabs", async ({ page }) => {
     await page.goto("/")
 
+    const sidebar = page.locator("aside").last()
+
     // Core Values tab should be active by default
-    await expect(page.locator("text=Trustworthy")).toBeVisible()
+    await expect(sidebar.locator("text=Trustworthy")).toBeVisible()
 
     // Switch to Purpose tab
-    await page.click("text=Our Purpose")
-    await expect(page.locator("text=Our Mission")).toBeVisible()
-    await expect(page.locator("text=Our Vision")).toBeVisible()
+    await sidebar.locator("text=Our Purpose").click()
+    await expect(sidebar.locator("text=Our Mission")).toBeVisible()
+    await expect(sidebar.locator("text=Our Vision")).toBeVisible()
   })
 })
