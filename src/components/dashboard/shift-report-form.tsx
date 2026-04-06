@@ -3,11 +3,13 @@
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
+import { useTransition } from "react"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { MoodPicker } from "@/components/dashboard/mood-picker"
 import { RichTextEditor } from "@/components/ui/rich-text-editor"
 import { Send } from "lucide-react"
+import { createShiftReport } from "@/lib/actions/shift-report"
 
 const shiftReportSchema = z.object({
   mood: z.string().min(1, "Please select your mood"),
@@ -18,7 +20,12 @@ const shiftReportSchema = z.object({
 
 type ShiftReportValues = z.infer<typeof shiftReportSchema>
 
-export function ShiftReportForm() {
+type ShiftReportFormProps = {
+  onSubmitted?: () => void
+}
+
+export function ShiftReportForm({ onSubmitted }: ShiftReportFormProps) {
+  const [isPending, startTransition] = useTransition()
   const {
     handleSubmit,
     setValue,
@@ -38,9 +45,16 @@ export function ShiftReportForm() {
   const selectedMood = watch("mood")
 
   function onSubmit(data: ShiftReportValues) {
-    console.log("Shift report submitted:", data)
-    // TODO: API call to create ShiftReport
-    reset()
+    startTransition(async () => {
+      await createShiftReport({
+        mood: data.mood as "EXCITED" | "HAPPY" | "NEUTRAL" | "TIRED" | "STRESSED",
+        accomplishments: data.accomplishments,
+        challenges: data.challenges,
+        managementSupport: data.managementSupport,
+      })
+      reset()
+      onSubmitted?.()
+    })
   }
 
   return (
@@ -100,9 +114,10 @@ export function ShiftReportForm() {
       <div className="flex justify-center">
         <Button
           type="submit"
+          disabled={isPending}
           className="w-1/3 bg-primary text-primary-foreground hover:opacity-90 shadow-sm shadow-primary/20"
         >
-          Submit Report <Send className="h-3.5 w-3.5" />
+          {isPending ? "Submitting..." : "Submit Report"} <Send className="h-3.5 w-3.5" />
         </Button>
       </div>
     </form>

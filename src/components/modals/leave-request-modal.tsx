@@ -22,6 +22,8 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Send } from "lucide-react"
+import { useTransition } from "react"
+import { createLeaveRequest } from "@/lib/actions/leave-request"
 
 const leaveRequestSchema = z.object({
   startDate: z.string().min(1, "Start date is required"),
@@ -40,6 +42,7 @@ type LeaveRequestModalProps = {
 }
 
 export function LeaveRequestModal({ open, onOpenChange }: LeaveRequestModalProps) {
+  const [isPending, startTransition] = useTransition()
   const {
     register,
     handleSubmit,
@@ -59,10 +62,18 @@ export function LeaveRequestModal({ open, onOpenChange }: LeaveRequestModalProps
   })
 
   function onSubmit(data: LeaveRequestValues) {
-    console.log("Leave request submitted:", data)
-    // TODO: API call to create LeaveRequest
-    reset()
-    onOpenChange(false)
+    startTransition(async () => {
+      await createLeaveRequest({
+        startDate: data.startDate,
+        endDate: data.endDate,
+        leaveType: data.leaveType as "VACATION" | "SICK" | "PERSONAL" | "BEREAVEMENT" | "MATERNITY" | "PATERNITY",
+        category: data.category as "PLANNED" | "UNPLANNED" | "EMERGENCY",
+        filingType: data.filingType as "FULL_DAY" | "HALF_DAY" | "UNDERTIME",
+        reason: data.reason,
+      })
+      reset()
+      onOpenChange(false)
+    })
   }
 
   function handleClose(isOpen: boolean) {
@@ -173,8 +184,8 @@ export function LeaveRequestModal({ open, onOpenChange }: LeaveRequestModalProps
             <Button type="button" variant="outline" onClick={() => handleClose(false)}>
               Cancel
             </Button>
-            <Button type="submit">
-              Submit <Send />
+            <Button type="submit" disabled={isPending}>
+              {isPending ? "Submitting..." : "Submit"} <Send />
             </Button>
           </DialogFooter>
         </form>
