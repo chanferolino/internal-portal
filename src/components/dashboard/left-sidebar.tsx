@@ -12,6 +12,7 @@ import { clockIn, clockOut, getActiveTimeEntry } from "@/lib/actions/time-entry"
 export function LeftSidebar() {
   const [timezone] = useState(() => Intl.DateTimeFormat().resolvedOptions().timeZone)
   const [isClockedIn, setIsClockedIn] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
   const [isPending, startTransition] = useTransition()
   const [leaveModalOpen, setLeaveModalOpen] = useState(false)
   const [outageModalOpen, setOutageModalOpen] = useState(false)
@@ -19,6 +20,7 @@ export function LeftSidebar() {
   useEffect(() => {
     getActiveTimeEntry().then((entry) => {
       setIsClockedIn(!!entry)
+      setIsLoading(false)
     })
   }, [])
 
@@ -51,7 +53,7 @@ export function LeftSidebar() {
         <TimeTrackingButton
           isClockedIn={isClockedIn}
           onToggle={handleToggleClock}
-          disabled={isPending}
+          disabled={isPending || isLoading}
         />
 
         <div className="grid grid-cols-2 gap-2">
