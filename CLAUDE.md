@@ -14,3 +14,15 @@ Detailed specs live in `.claude/rules/`:
 - `features.md` — feature specifications
 - `database.md` — Prisma schema conventions and models
 - `components.md` — component patterns (modals, accordions, emoji picker, FAB)
+
+## Testing
+
+Every new feature must include tests before it is considered complete:
+
+- **Integration tests (Vitest)** for server actions and backend logic — test against a real test database
+- **Frontend component tests (Vitest + Testing Library)** for interactive components
+- **E2E tests (Playwright)** for critical user flows
+
+Run tests with:
+- `pnpm test` — run Vitest (unit + integration)
+- `pnpm test:e2e` — run Playwright E2E tests
