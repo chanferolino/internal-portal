@@ -67,15 +67,15 @@ test.describe("Modals", () => {
   test("should open leave request modal", async ({ page }) => {
     await page.goto("/")
 
-    await page.click("text=Leave Request")
-    await expect(page.locator("text=Leave Request").nth(1)).toBeVisible()
+    await page.locator("button", { hasText: "Leave Request" }).click()
+    await expect(page.locator("[role=dialog]")).toBeVisible()
   })
 
   test("should open outage report modal", async ({ page }) => {
     await page.goto("/")
 
-    await page.click("text=Report Outage")
-    await expect(page.locator("text=Report Outage").nth(1)).toBeVisible()
+    await page.locator("button", { hasText: "Report Outage" }).click()
+    await expect(page.locator("[role=dialog]")).toBeVisible()
   })
 
   test("should open ticket modal via FAB", async ({ page }) => {
