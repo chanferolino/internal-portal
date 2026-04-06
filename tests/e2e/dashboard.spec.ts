@@ -16,10 +16,10 @@ test.describe("Dashboard Layout", () => {
     // Center - End of Shift Report
     await expect(page.locator("text=End of Shift Report")).toBeVisible()
 
-    // Right sidebar sections
-    await expect(page.locator("text=US Holidays 2025").first()).toBeVisible()
-    await expect(page.locator("text=About Us").first()).toBeVisible()
-    await expect(page.locator("text=Resources").first()).toBeVisible()
+    // Right sidebar sections (last() because the aside is after the inline mobile version in DOM)
+    await expect(page.locator("text=US Holidays 2025").last()).toBeVisible()
+    await expect(page.locator("text=About Us").last()).toBeVisible()
+    await expect(page.locator("text=Resources").last()).toBeVisible()
   })
 
   test("should display the live clock", async ({ page }) => {
