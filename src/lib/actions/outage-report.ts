@@ -19,25 +19,30 @@ const outageReportSchema = z.object({
 })
 
 export async function createOutageReport(data: z.infer<typeof outageReportSchema>) {
-  const user = await DEMO_USER_ID_QUERY()
-  if (!user) throw new Error("User not found")
+  try {
+    const user = await DEMO_USER_ID_QUERY()
+    if (!user) return { error: "User not found" }
 
-  const parsed = outageReportSchema.parse(data)
+    const parsed = outageReportSchema.parse(data)
 
-  return prisma.outageReport.create({
-    data: {
-      userId: user.id,
-      type: parsed.type,
-      cause: parsed.cause,
-      address: parsed.address,
-      city: parsed.city,
-      startTime: new Date(`${parsed.startDate}T${parsed.startTime}`),
-      endTime: parsed.endTime && parsed.startDate
-        ? new Date(`${parsed.startDate}T${parsed.endTime}`)
-        : null,
-      startDate: new Date(parsed.startDate),
-      endDate: parsed.endDate ? new Date(parsed.endDate) : null,
-      details: parsed.details || null,
-    },
-  })
+    await prisma.outageReport.create({
+      data: {
+        userId: user.id,
+        type: parsed.type,
+        cause: parsed.cause,
+        address: parsed.address,
+        city: parsed.city,
+        startTime: new Date(`${parsed.startDate}T${parsed.startTime}`),
+        endTime: parsed.endTime && parsed.startDate
+          ? new Date(`${parsed.startDate}T${parsed.endTime}`)
+          : null,
+        startDate: new Date(parsed.startDate),
+        endDate: parsed.endDate ? new Date(parsed.endDate) : null,
+        details: parsed.details || null,
+      },
+    })
+    return { success: true }
+  } catch {
+    return { error: "Failed to submit outage report" }
+  }
 }

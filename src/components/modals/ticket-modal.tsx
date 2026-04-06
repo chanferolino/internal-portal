@@ -24,6 +24,7 @@ import {
 import { Send } from "lucide-react"
 import { useTransition } from "react"
 import { createTicket } from "@/lib/actions/ticket"
+import { toast } from "sonner"
 
 const ticketSchema = z.object({
   category: z.string().min(1, "Category is required"),
@@ -64,15 +65,20 @@ export function TicketModal({ open, onOpenChange }: TicketModalProps) {
 
   function onSubmit(data: TicketValues) {
     startTransition(async () => {
-      await createTicket({
+      const result = await createTicket({
         category: data.category as "HR" | "FINANCE" | "IT",
         subCategory: (data.subCategory as "PERIPHERALS" | "PERMISSIONS") || undefined,
         subject: data.subject,
         description: data.description,
         priority: data.priority as "LOW" | "MEDIUM" | "HIGH" | "URGENT",
       })
-      reset()
-      onOpenChange(false)
+      if (result.error) {
+        toast.error(result.error)
+      } else {
+        toast.success("Ticket submitted")
+        reset()
+        onOpenChange(false)
+      }
     })
   }
 
