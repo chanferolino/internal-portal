@@ -21,7 +21,7 @@ export function MoodPicker({ value, onChange }: MoodPickerProps) {
       <p className="text-sm font-medium text-foreground/80">
         How are you feeling right now?
       </p>
-      <div className="flex gap-1.5">
+      <div className="flex flex-wrap gap-1.5">
         {MOODS.map((mood) => {
           const isActive = value === mood.value
           return (
