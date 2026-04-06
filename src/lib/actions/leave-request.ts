@@ -16,20 +16,25 @@ const leaveRequestSchema = z.object({
 })
 
 export async function createLeaveRequest(data: z.infer<typeof leaveRequestSchema>) {
-  const user = await DEMO_USER_ID_QUERY()
-  if (!user) throw new Error("User not found")
+  try {
+    const user = await DEMO_USER_ID_QUERY()
+    if (!user) return { error: "User not found" }
 
-  const parsed = leaveRequestSchema.parse(data)
+    const parsed = leaveRequestSchema.parse(data)
 
-  return prisma.leaveRequest.create({
-    data: {
-      userId: user.id,
-      startDate: new Date(parsed.startDate),
-      endDate: new Date(parsed.endDate),
-      leaveType: parsed.leaveType,
-      category: parsed.category,
-      filingType: parsed.filingType,
-      reason: parsed.reason,
-    },
-  })
+    await prisma.leaveRequest.create({
+      data: {
+        userId: user.id,
+        startDate: new Date(parsed.startDate),
+        endDate: new Date(parsed.endDate),
+        leaveType: parsed.leaveType,
+        category: parsed.category,
+        filingType: parsed.filingType,
+        reason: parsed.reason,
+      },
+    })
+    return { success: true }
+  } catch {
+    return { error: "Failed to submit leave request" }
+  }
 }

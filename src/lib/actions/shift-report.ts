@@ -14,21 +14,26 @@ const shiftReportSchema = z.object({
 })
 
 export async function createShiftReport(data: z.infer<typeof shiftReportSchema>) {
-  const user = await DEMO_USER_ID_QUERY()
-  if (!user) throw new Error("User not found")
+  try {
+    const user = await DEMO_USER_ID_QUERY()
+    if (!user) return { error: "User not found" }
 
-  const parsed = shiftReportSchema.parse(data)
+    const parsed = shiftReportSchema.parse(data)
 
-  return prisma.shiftReport.create({
-    data: {
-      userId: user.id,
-      mood: parsed.mood,
-      accomplishments: parsed.accomplishments,
-      challenges: parsed.challenges,
-      managementSupport: parsed.managementSupport || null,
-      date: new Date(),
-    },
-  })
+    await prisma.shiftReport.create({
+      data: {
+        userId: user.id,
+        mood: parsed.mood,
+        accomplishments: parsed.accomplishments,
+        challenges: parsed.challenges,
+        managementSupport: parsed.managementSupport || null,
+        date: new Date(),
+      },
+    })
+    return { success: true }
+  } catch {
+    return { error: "Failed to submit shift report" }
+  }
 }
 
 export async function getShiftReports() {

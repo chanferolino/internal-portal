@@ -8,6 +8,7 @@ import { LeaveRequestModal } from "@/components/modals/leave-request-modal"
 import { OutageReportModal } from "@/components/modals/outage-report-modal"
 import { Zap, CalendarDays, Timer } from "lucide-react"
 import { clockIn, clockOut, getActiveTimeEntry } from "@/lib/actions/time-entry"
+import { toast } from "sonner"
 
 export function LeftSidebar() {
   const [timezone] = useState(() => Intl.DateTimeFormat().resolvedOptions().timeZone)
@@ -25,11 +26,21 @@ export function LeftSidebar() {
   function handleToggleClock() {
     startTransition(async () => {
       if (isClockedIn) {
-        await clockOut()
-        setIsClockedIn(false)
+        const result = await clockOut()
+        if (result.error) {
+          toast.error(result.error)
+        } else {
+          setIsClockedIn(false)
+          toast.success("Clocked out successfully")
+        }
       } else {
-        await clockIn(timezone)
-        setIsClockedIn(true)
+        const result = await clockIn(timezone)
+        if (result.error) {
+          toast.error(result.error)
+        } else {
+          setIsClockedIn(true)
+          toast.success("Clocked in successfully")
+        }
       }
     })
   }

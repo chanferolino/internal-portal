@@ -15,19 +15,24 @@ const ticketSchema = z.object({
 })
 
 export async function createTicket(data: z.infer<typeof ticketSchema>) {
-  const user = await DEMO_USER_ID_QUERY()
-  if (!user) throw new Error("User not found")
+  try {
+    const user = await DEMO_USER_ID_QUERY()
+    if (!user) return { error: "User not found" }
 
-  const parsed = ticketSchema.parse(data)
+    const parsed = ticketSchema.parse(data)
 
-  return prisma.ticket.create({
-    data: {
-      userId: user.id,
-      category: parsed.category,
-      subCategory: parsed.subCategory || null,
-      subject: parsed.subject,
-      description: parsed.description,
-      priority: parsed.priority,
-    },
-  })
+    await prisma.ticket.create({
+      data: {
+        userId: user.id,
+        category: parsed.category,
+        subCategory: parsed.subCategory || null,
+        subject: parsed.subject,
+        description: parsed.description,
+        priority: parsed.priority,
+      },
+    })
+    return { success: true }
+  } catch {
+    return { error: "Failed to submit ticket" }
+  }
 }
