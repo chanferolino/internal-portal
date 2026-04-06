@@ -6,12 +6,14 @@ import { LogIn, LogOut } from "lucide-react"
 type TimeTrackingButtonProps = {
   isClockedIn: boolean
   onToggle: () => void
+  disabled?: boolean
 }
 
-export function TimeTrackingButton({ isClockedIn, onToggle }: TimeTrackingButtonProps) {
+export function TimeTrackingButton({ isClockedIn, onToggle, disabled }: TimeTrackingButtonProps) {
   return (
     <button
       onClick={onToggle}
+      disabled={disabled}
       className={cn(
         "w-full h-11 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 transition-all duration-200 cursor-pointer",
         isClockedIn

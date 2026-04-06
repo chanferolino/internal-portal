@@ -22,6 +22,8 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Send } from "lucide-react"
+import { useTransition } from "react"
+import { createTicket } from "@/lib/actions/ticket"
 
 const ticketSchema = z.object({
   category: z.string().min(1, "Category is required"),
@@ -39,6 +41,7 @@ type TicketModalProps = {
 }
 
 export function TicketModal({ open, onOpenChange }: TicketModalProps) {
+  const [isPending, startTransition] = useTransition()
   const {
     register,
     handleSubmit,
@@ -60,10 +63,17 @@ export function TicketModal({ open, onOpenChange }: TicketModalProps) {
   const selectedCategory = watch("category")
 
   function onSubmit(data: TicketValues) {
-    console.log("Ticket submitted:", data)
-    // TODO: API call to create Ticket
-    reset()
-    onOpenChange(false)
+    startTransition(async () => {
+      await createTicket({
+        category: data.category as "HR" | "FINANCE" | "IT",
+        subCategory: (data.subCategory as "PERIPHERALS" | "PERMISSIONS") || undefined,
+        subject: data.subject,
+        description: data.description,
+        priority: data.priority as "LOW" | "MEDIUM" | "HIGH" | "URGENT",
+      })
+      reset()
+      onOpenChange(false)
+    })
   }
 
   function handleClose(isOpen: boolean) {
@@ -164,8 +174,8 @@ export function TicketModal({ open, onOpenChange }: TicketModalProps) {
             <Button type="button" variant="outline" onClick={() => handleClose(false)}>
               Cancel
             </Button>
-            <Button type="submit">
-              Submit Ticket <Send />
+            <Button type="submit" disabled={isPending}>
+              {isPending ? "Submitting..." : "Submit Ticket"} <Send />
             </Button>
           </DialogFooter>
         </form>

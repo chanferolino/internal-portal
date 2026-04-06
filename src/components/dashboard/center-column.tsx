@@ -1,10 +1,13 @@
 "use client"
 
+import { useState } from "react"
 import { ShiftReportForm } from "@/components/dashboard/shift-report-form"
 import { ReportHistory } from "@/components/dashboard/report-history"
 import { ClipboardPen, History } from "lucide-react"
 
 export function CenterColumn() {
+  const [refreshKey, setRefreshKey] = useState(0)
+
   return (
     <div className="space-y-4">
       {/* Shift Report */}
@@ -14,7 +17,7 @@ export function CenterColumn() {
           <h2 className="text-xl font-semibold text-foreground/90">End of Shift Report</h2>
         </div>
         <div className="p-4">
-          <ShiftReportForm />
+          <ShiftReportForm onSubmitted={() => setRefreshKey((k) => k + 1)} />
         </div>
       </section>
 
@@ -25,7 +28,7 @@ export function CenterColumn() {
           <h2 className="text-xl font-semibold text-foreground/90">Report History</h2>
         </div>
         <div className="p-4">
-          <ReportHistory />
+          <ReportHistory refreshKey={refreshKey} />
         </div>
       </section>
     </div>

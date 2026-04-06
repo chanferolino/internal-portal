@@ -22,6 +22,8 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Send } from "lucide-react"
+import { useTransition } from "react"
+import { createOutageReport } from "@/lib/actions/outage-report"
 
 const outageReportSchema = z.object({
   type: z.string().min(1, "Outage type is required"),
@@ -43,6 +45,7 @@ type OutageReportModalProps = {
 }
 
 export function OutageReportModal({ open, onOpenChange }: OutageReportModalProps) {
+  const [isPending, startTransition] = useTransition()
   const {
     register,
     handleSubmit,
@@ -65,10 +68,21 @@ export function OutageReportModal({ open, onOpenChange }: OutageReportModalProps
   })
 
   function onSubmit(data: OutageReportValues) {
-    console.log("Outage report submitted:", data)
-    // TODO: API call to create OutageReport
-    reset()
-    onOpenChange(false)
+    startTransition(async () => {
+      await createOutageReport({
+        type: data.type as "INTERNET" | "POWER",
+        cause: data.cause,
+        address: data.address,
+        city: data.city,
+        startTime: data.startTime,
+        endTime: data.endTime || undefined,
+        startDate: data.startDate,
+        endDate: data.endDate || undefined,
+        details: data.details || undefined,
+      })
+      reset()
+      onOpenChange(false)
+    })
   }
 
   function handleClose(isOpen: boolean) {
@@ -168,8 +182,8 @@ export function OutageReportModal({ open, onOpenChange }: OutageReportModalProps
             <Button type="button" variant="outline" onClick={() => handleClose(false)}>
               Cancel
             </Button>
-            <Button type="submit">
-              Submit <Send />
+            <Button type="submit" disabled={isPending}>
+              {isPending ? "Submitting..." : "Submit"} <Send />
             </Button>
           </DialogFooter>
         </form>

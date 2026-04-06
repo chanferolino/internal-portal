@@ -1,22 +1,37 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect, useTransition } from "react"
 import { Button } from "@/components/ui/button"
 import { ClockTime, ClockDate } from "@/components/dashboard/clock"
 import { TimeTrackingButton } from "@/components/dashboard/time-tracking-button"
 import { LeaveRequestModal } from "@/components/modals/leave-request-modal"
 import { OutageReportModal } from "@/components/modals/outage-report-modal"
 import { Zap, CalendarDays, Timer } from "lucide-react"
+import { clockIn, clockOut, getActiveTimeEntry } from "@/lib/actions/time-entry"
 
 export function LeftSidebar() {
   const [timezone] = useState(() => Intl.DateTimeFormat().resolvedOptions().timeZone)
   const [isClockedIn, setIsClockedIn] = useState(false)
+  const [isPending, startTransition] = useTransition()
   const [leaveModalOpen, setLeaveModalOpen] = useState(false)
   const [outageModalOpen, setOutageModalOpen] = useState(false)
 
+  useEffect(() => {
+    getActiveTimeEntry().then((entry) => {
+      setIsClockedIn(!!entry)
+    })
+  }, [])
+
   function handleToggleClock() {
-    setIsClockedIn((prev) => !prev)
-    // TODO: API call to create/update TimeEntry
+    startTransition(async () => {
+      if (isClockedIn) {
+        await clockOut()
+        setIsClockedIn(false)
+      } else {
+        await clockIn(timezone)
+        setIsClockedIn(true)
+      }
+    })
   }
 
   return (
@@ -33,7 +48,11 @@ export function LeftSidebar() {
 
         <ClockTime timezone={timezone} />
 
-        <TimeTrackingButton isClockedIn={isClockedIn} onToggle={handleToggleClock} />
+        <TimeTrackingButton
+          isClockedIn={isClockedIn}
+          onToggle={handleToggleClock}
+          disabled={isPending}
+        />
 
         <div className="grid grid-cols-2 gap-2">
           <Button
