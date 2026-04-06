@@ -24,6 +24,7 @@ import {
 import { Send } from "lucide-react"
 import { useTransition } from "react"
 import { createOutageReport } from "@/lib/actions/outage-report"
+import { toast } from "sonner"
 
 const outageReportSchema = z.object({
   type: z.string().min(1, "Outage type is required"),
@@ -69,7 +70,7 @@ export function OutageReportModal({ open, onOpenChange }: OutageReportModalProps
 
   function onSubmit(data: OutageReportValues) {
     startTransition(async () => {
-      await createOutageReport({
+      const result = await createOutageReport({
         type: data.type as "INTERNET" | "POWER",
         cause: data.cause,
         address: data.address,
@@ -80,8 +81,13 @@ export function OutageReportModal({ open, onOpenChange }: OutageReportModalProps
         endDate: data.endDate || undefined,
         details: data.details || undefined,
       })
-      reset()
-      onOpenChange(false)
+      if (result.error) {
+        toast.error(result.error)
+      } else {
+        toast.success("Outage report submitted")
+        reset()
+        onOpenChange(false)
+      }
     })
   }
 

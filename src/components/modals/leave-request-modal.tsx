@@ -24,6 +24,7 @@ import {
 import { Send } from "lucide-react"
 import { useTransition } from "react"
 import { createLeaveRequest } from "@/lib/actions/leave-request"
+import { toast } from "sonner"
 
 const leaveRequestSchema = z.object({
   startDate: z.string().min(1, "Start date is required"),
@@ -63,7 +64,7 @@ export function LeaveRequestModal({ open, onOpenChange }: LeaveRequestModalProps
 
   function onSubmit(data: LeaveRequestValues) {
     startTransition(async () => {
-      await createLeaveRequest({
+      const result = await createLeaveRequest({
         startDate: data.startDate,
         endDate: data.endDate,
         leaveType: data.leaveType as "VACATION" | "SICK" | "PERSONAL" | "BEREAVEMENT" | "MATERNITY" | "PATERNITY",
@@ -71,8 +72,13 @@ export function LeaveRequestModal({ open, onOpenChange }: LeaveRequestModalProps
         filingType: data.filingType as "FULL_DAY" | "HALF_DAY" | "UNDERTIME",
         reason: data.reason,
       })
-      reset()
-      onOpenChange(false)
+      if (result.error) {
+        toast.error(result.error)
+      } else {
+        toast.success("Leave request submitted")
+        reset()
+        onOpenChange(false)
+      }
     })
   }
 

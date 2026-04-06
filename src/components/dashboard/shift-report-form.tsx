@@ -10,6 +10,7 @@ import { MoodPicker } from "@/components/dashboard/mood-picker"
 import { RichTextEditor } from "@/components/ui/rich-text-editor"
 import { Send } from "lucide-react"
 import { createShiftReport } from "@/lib/actions/shift-report"
+import { toast } from "sonner"
 
 const shiftReportSchema = z.object({
   mood: z.string().min(1, "Please select your mood"),
@@ -46,14 +47,19 @@ export function ShiftReportForm({ onSubmitted }: ShiftReportFormProps) {
 
   function onSubmit(data: ShiftReportValues) {
     startTransition(async () => {
-      await createShiftReport({
+      const result = await createShiftReport({
         mood: data.mood as "EXCITED" | "HAPPY" | "NEUTRAL" | "TIRED" | "STRESSED",
         accomplishments: data.accomplishments,
         challenges: data.challenges,
         managementSupport: data.managementSupport,
       })
-      reset()
-      onSubmitted?.()
+      if (result.error) {
+        toast.error(result.error)
+      } else {
+        toast.success("Shift report submitted")
+        reset()
+        onSubmitted?.()
+      }
     })
   }
 
