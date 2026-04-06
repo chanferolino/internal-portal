@@ -1,7 +1,7 @@
 import { PrismaPg } from "@prisma/adapter-pg"
 import { PrismaClient } from "../../src/generated/prisma/client"
 
-const TEST_DATABASE_URL = "postgresql://postgres@localhost:5432/internal_portal_test"
+const TEST_DATABASE_URL = "postgresql://postgres:postgres@localhost:5432/internal_portal_test"
 
 const adapter = new PrismaPg({ connectionString: TEST_DATABASE_URL })
 export const testPrisma = new PrismaClient({ adapter })
