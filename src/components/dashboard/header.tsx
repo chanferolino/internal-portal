@@ -1,6 +1,7 @@
 "use client"
 
 import { CircleUser } from "lucide-react"
+import { ThemeToggle } from "@/components/theme-toggle"
 
 export function Header() {
   return (
@@ -17,7 +18,8 @@ export function Header() {
         </span>
       </div>
 
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2">
+        <ThemeToggle />
         <div className="flex items-center gap-2 px-2 py-1 rounded-md hover:bg-accent/50 transition-colors cursor-pointer">
           <div className="h-6 w-6 rounded-full bg-gradient-to-br from-primary/60 to-chart-2/60 flex items-center justify-center">
             <CircleUser className="h-3.5 w-3.5 text-foreground/80" />

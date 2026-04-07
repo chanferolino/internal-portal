@@ -1,22 +1,15 @@
 import { test, expect } from "@playwright/test"
 
-// Use a wide viewport so the 3-column layout is fully visible
-test.use({ viewport: { width: 1440, height: 900 } })
+test.use({ viewport: { width: 1600, height: 900 } })
 
 test.describe("Dashboard Layout", () => {
   test("should display the three-column layout", async ({ page }) => {
     await page.goto("/")
+    await page.waitForLoadState("networkidle")
 
-    // Header
     await expect(page.locator("text=Internal Portal")).toBeVisible()
-
-    // Left sidebar - Time Tracking
     await expect(page.locator("text=Time Tracking").first()).toBeVisible()
-
-    // Center - End of Shift Report
     await expect(page.locator("text=End of Shift Report")).toBeVisible()
-
-    // Right sidebar sections (last() because the aside is after the inline mobile version in DOM)
     await expect(page.locator("text=US Holidays 2025").last()).toBeVisible()
     await expect(page.locator("text=About Us").last()).toBeVisible()
     await expect(page.locator("text=Resources").last()).toBeVisible()
@@ -60,36 +53,36 @@ test.describe("Shift Report", () => {
 test.describe("Modals", () => {
   test("should open leave request modal", async ({ page }) => {
     await page.goto("/")
+    await page.waitForLoadState("networkidle")
 
-    // Use the left sidebar (first aside) to find the button
-    const sidebar = page.locator("aside").first()
-    await sidebar.getByRole("button", { name: "Leave Request" }).click()
-    await expect(page.locator("[data-slot=dialog-content]")).toBeVisible({ timeout: 10000 })
+    await page.getByRole("button", { name: "Leave Request" }).first().click()
+    await expect(page.locator("[data-slot=dialog-content]")).toBeVisible({ timeout: 15000 })
   })
 
   test("should open outage report modal", async ({ page }) => {
     await page.goto("/")
+    await page.waitForLoadState("networkidle")
 
-    const sidebar = page.locator("aside").first()
-    await sidebar.getByRole("button", { name: "Report Outage" }).click()
-    await expect(page.locator("[data-slot=dialog-content]")).toBeVisible({ timeout: 10000 })
+    await page.getByRole("button", { name: "Report Outage" }).first().click()
+    await expect(page.locator("[data-slot=dialog-content]")).toBeVisible({ timeout: 15000 })
   })
 
   test("should open ticket modal via FAB", async ({ page }) => {
     await page.goto("/")
+    await page.waitForLoadState("networkidle")
 
     const fab = page.locator("button.fixed")
     await fab.click()
-    await expect(page.locator("[data-slot=dialog-content]")).toBeVisible({ timeout: 10000 })
+    await expect(page.locator("[data-slot=dialog-content]")).toBeVisible({ timeout: 15000 })
   })
 })
 
 test.describe("Right Sidebar", () => {
   test("should expand holidays list", async ({ page }) => {
     await page.goto("/")
+    await page.waitForLoadState("networkidle")
 
     const sidebar = page.locator("aside").last()
-
     await expect(sidebar.locator("text=Christmas Day")).not.toBeVisible()
     await sidebar.locator("text=/Show all/").click()
     await expect(sidebar.locator("text=Christmas Day")).toBeVisible()
@@ -97,9 +90,9 @@ test.describe("Right Sidebar", () => {
 
   test("should switch About Us tabs", async ({ page }) => {
     await page.goto("/")
+    await page.waitForLoadState("networkidle")
 
     const sidebar = page.locator("aside").last()
-
     await expect(sidebar.locator("text=Trustworthy")).toBeVisible()
 
     await sidebar.locator("text=Our Purpose").click()

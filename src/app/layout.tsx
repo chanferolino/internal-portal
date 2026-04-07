@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import { DM_Sans, JetBrains_Mono } from "next/font/google"
-import { Toaster } from "@/components/ui/sonner"
+import { ThemeProvider } from "@/components/theme-provider"
 import "./globals.css"
 
 const dmSans = DM_Sans({
@@ -30,10 +30,10 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${dmSans.variable} ${jetbrainsMono.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col">
-        {children}
-        <Toaster richColors position="top-right" />
+        <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>
   )
