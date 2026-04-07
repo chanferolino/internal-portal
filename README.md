@@ -84,6 +84,9 @@ prisma/             # Prisma schema, migrations, and seed
 - **US Holidays** -- Static holiday list for the current year
 - **About Us & FAQ** -- Company info, core values, and quick links
 
+## Screenshot
+<img width="1920" height="1274" alt="internal portal" src="https://github.com/user-attachments/assets/4726a0f7-41cf-4615-913b-27dcf3f19473" />
+
 ## Testing
 
 ```bash
